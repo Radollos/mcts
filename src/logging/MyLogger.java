@@ -31,7 +31,7 @@ public class MyLogger extends Logger {
 		return scanner.nextLine();
 	}
 
-	private static void print(String toPrint) {
+	public static void print(String toPrint) {
 		System.out.println(toPrint);
 	}
 }

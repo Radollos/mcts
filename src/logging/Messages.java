@@ -13,4 +13,5 @@ public class Messages {
 	public static final String PLAYER_STATISTICS = "Mana:{0}, HP:{1}/{2} \n";
 	public static final String MINION_STATISTICS = "{0}, M:{1}, HP:{2}/{3}, Atk:{4}";
 
+	public static final String TAUNT_ON_THE_BOARD = "You must accact a minion with Taunt";
 }

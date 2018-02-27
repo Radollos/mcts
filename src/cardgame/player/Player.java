@@ -71,6 +71,11 @@ public abstract class Player implements Targetable {
 		return 0;
 	}
 
+	@Override
+	public void healed(int healValue) {
+		currentHealth = currentHealth + healValue > maxHealth ? maxHealth : currentHealth + healValue;
+	}
+
 	public abstract void startTurn();
 
 	public int getCurrentHealth() {
