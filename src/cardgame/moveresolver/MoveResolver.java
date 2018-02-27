@@ -1,5 +1,6 @@
 package cardgame.moveresolver;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,6 +23,7 @@ public class MoveResolver implements IMoveResolver {
 	private final IBoard board;
 	private final IBoardManager boardManager;
 	private final Timer turnTimer = new Timer();
+	private final long timeForTurn = 60000;
 
 	public MoveResolver(Player playerOne, Player playerTwo, IBoard board) {
 		this.playerOne = playerOne;
@@ -43,7 +45,8 @@ public class MoveResolver implements IMoveResolver {
 
 	@Override
 	public void playCard(Card card, Player player) {
-		if (checkCardPlay(card, player)) {
+		if (player.payManaCost(card.getCost())) {
+			player.removeCardFromHand(card);
 			if (card instanceof Minion) {
 				board.playCardOnBoard(player, (Minion) card);
 			} else if (card instanceof Spell) {
@@ -53,7 +56,8 @@ public class MoveResolver implements IMoveResolver {
 		boardManager.runBoardCheck();
 	}
 
-	private boolean checkCardPlay(Card card, Player player) {
+	@Override
+	public boolean checkCardPlay(Card card, Player player) {
 		if (board.getPlayerBoard(player).size() >= 7) {
 			return false;
 		} else if (player.getCurrentMana() < card.getCost()) {
@@ -71,7 +75,7 @@ public class MoveResolver implements IMoveResolver {
 
 	@Override
 	public void endTurn() {
-		// TODO: inform current player that his turn has ended?
+		// TODO: inform current player that his turn has ended/started?
 		currentPlayer = (currentPlayer == playerOne) ? playerTwo : playerOne;
 		turnTimer.cancel();
 		turnTimer.schedule(new TimerTask() {
@@ -79,12 +83,17 @@ public class MoveResolver implements IMoveResolver {
 			public void run() {
 				endTurn();
 			}
-		}, 60);
+		}, timeForTurn);
 		currentPlayer.startTurn();
 	}
 
 	@Override
 	public Player getCurrentPlayer() {
 		return currentPlayer;
+	}
+
+	@Override
+	public List<Minion> getPlayerBoard(Player player) {
+		return board.getPlayerBoard(player);
 	}
 }
