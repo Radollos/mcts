@@ -53,9 +53,10 @@ public class Board implements IBoard {
 	}
 
 	@Override
-	public void playCardOnBoard(Player player, Minion minion) {
+	public void playMinionOnBoard(Player player, Minion minion) {
 		playersBoard.get(player).add(minion);
 	}
+	
 
 	@Override
 	public void removeCardFromBoard(Player player, Minion minion) {

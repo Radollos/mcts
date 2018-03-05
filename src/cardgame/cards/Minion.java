@@ -1,6 +1,10 @@
 package cardgame.cards;
 
-import logging.Messages;
+import static logging.Messages.MINION_STATISTICS;
+
+import java.util.List;
+
+import cardgame.cards.effects.Effect;
 
 /**
  * @author Radek
@@ -12,14 +16,14 @@ public class Minion extends Card implements Targetable {
 	protected int currentHealth;
 	protected int attack;
 
-	public Minion(String name, int attack, int maxHealth, int cost) {
-		super(name, cost);
+	public Minion(String name, int attack, int maxHealth, int cost, List<Effect> effects) {
+		super(name, cost, effects);
 		setMaxHealth(maxHealth);
 		setCurrentHealth(maxHealth);
 	}
 
 	public Minion(Minion minion) {
-		this(minion.name, minion.attack, minion.maxHealth, minion.cost);
+		this(minion.name, minion.attack, minion.maxHealth, minion.cost, minion.effects);
 	}
 
 	public int getMaxHealth() {
@@ -53,8 +57,17 @@ public class Minion extends Card implements Targetable {
 	}
 
 	@Override
+	public void healed(int healValue) {
+		currentHealth = currentHealth + healValue > maxHealth ? maxHealth : currentHealth + healValue;
+	}
+
+	public void setHealth(int hp) {
+		currentHealth = hp;
+	}
+
+	@Override
 	public String toString() {
-		return System.out.format(Messages.MINION_STATISTICS, name, cost, currentHealth, maxHealth, attack).toString();
+		return System.out.format(MINION_STATISTICS, name, cost, currentHealth, maxHealth, attack).toString();
 	}
 
 	@Override

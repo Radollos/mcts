@@ -24,5 +24,5 @@ public class Messages {
 	// Errors
 	public static final String ERROR_MARKER = "[ERROR] {0}";
 	public static final String LOG_FILE_CREATE_EXCEPTION = "Exception while creating log file.";
-
+	public static final String TAUNT_ON_THE_BOARD = "You must accact a minion with Taunt";
 }
