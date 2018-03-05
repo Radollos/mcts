@@ -1,5 +1,9 @@
 package logging;
 
+import static logging.Messages.ERROR_MARKER;
+import static logging.Messages.LOG_FILE_CREATE_EXCEPTION;
+import static logging.Messages.PLAYER_INSTRUCTION;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -24,7 +28,7 @@ public class MyLogger extends Logger {
 		try {
 			fileWriter = new PrintWriter(LocalDateTime.now().toString() + ".txt", "UTF-8");
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
-			printError(Messages.LOG_FILE_CREATE_EXCEPTION, e);
+			printError(LOG_FILE_CREATE_EXCEPTION, e);
 			e.printStackTrace();
 		}
 	}
@@ -34,11 +38,11 @@ public class MyLogger extends Logger {
 	}
 
 	public static void print(String message) {
-		printInternal(message);
+		printAndSaveToLogFile(message);
 	}
 
 	public static void printMenu() {
-
+		printInternal(PLAYER_INSTRUCTION);
 	}
 
 	public static void printBoard(IBoard board, Player currentPlayer) {
@@ -46,12 +50,14 @@ public class MyLogger extends Logger {
 	}
 
 	public static void printError(String message, Throwable throwable) {
-		printInternal(System.out.format(Messages.ERROR_MARKER, message).toString());
+		printInternal(System.out.format(ERROR_MARKER, message).toString());
 	}
 
 	public static String getInputFromUser(String inputDescription) {
 		printAndSaveToLogFile(inputDescription);
-		return scanner.nextLine();
+		String userInput = scanner.nextLine();
+		printAndSaveToLogFile(userInput);
+		return userInput;
 	}
 
 	private static void printAndSaveToLogFile(String message) {

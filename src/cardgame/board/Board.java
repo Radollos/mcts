@@ -47,8 +47,8 @@ public class Board implements IBoard {
 	}
 
 	private List<? extends Card> copyCardList(List<? extends Card> list) {
-		List<Card> copy = new LinkedList<>(list);
-		// list.stream().forEach(e -> copy.add(e.makeCopy()));
+		List<Card> copy = new LinkedList<>();
+		list.stream().forEach(e -> copy.add(e.makeCopy()));
 		return copy;
 	}
 
@@ -79,7 +79,7 @@ public class Board implements IBoard {
 		return toStringTop(it.next()) + toStringBottom(it.next());
 	}
 
-	public String toStringTop(Player player) {
+	private String toStringTop(Player player) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(player.toStringTop());
 		builder.append(System.out.format(LINE_WITH_TEXT, "Hand:"));
@@ -95,7 +95,7 @@ public class Board implements IBoard {
 		return builder.toString();
 	}
 
-	public String toStringBottom(Player player) {
+	private String toStringBottom(Player player) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(LINE);
 		Iterator<Minion> iterator = playersBoard.get(player).iterator();

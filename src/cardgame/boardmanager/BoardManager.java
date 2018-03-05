@@ -6,6 +6,12 @@ import cardgame.board.IBoard;
 import cardgame.cards.Minion;
 import cardgame.player.Player;
 
+/**
+ * @author Radek
+ *
+ *         Responsible for 'cleaning' game board from dead minions and checking
+ *         for game end (any player dead)
+ */
 public class BoardManager implements IBoardManager {
 
 	private final IBoard board;

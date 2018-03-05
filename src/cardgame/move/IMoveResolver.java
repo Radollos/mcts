@@ -1,4 +1,4 @@
-package cardgame.moveresolver;
+package cardgame.move;
 
 import java.util.List;
 
@@ -11,9 +11,7 @@ public interface IMoveResolver {
 
 	public void drawCard(Player player);
 
-	public void playCard(Card card, Player player);
-
-	public boolean checkCardPlay(Card card, Player player);
+	public boolean playCard(Card card, Player player);
 
 	public void attackWithMinion(Minion minion, Targetable target);
 

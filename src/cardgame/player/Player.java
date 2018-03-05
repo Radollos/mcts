@@ -9,7 +9,7 @@ import java.util.List;
 import cardgame.cards.Card;
 import cardgame.cards.Minion;
 import cardgame.cards.Targetable;
-import cardgame.moveresolver.IMoveResolver;
+import cardgame.move.IMoveResolver;
 
 /**
  * @author Radek
@@ -29,11 +29,10 @@ public abstract class Player implements Targetable {
 
 	protected IMoveResolver moveResolver;
 
-	public Player(String name, int maxHealth, List<Card> startingDeck, IMoveResolver moveResolver) {
+	public Player(String name, int maxHealth, List<Card> startingDeck) {
 		this.name = name;
 		this.currentHealth = this.maxHealth = maxHealth;
 		this.startingDeck = startingDeck;
-		this.moveResolver = moveResolver;
 	}
 
 	public void nextTurn() {
@@ -51,13 +50,13 @@ public abstract class Player implements Targetable {
 	}
 
 	public void addCardToHand(Card card) {
-		if (card != null && cardsInHand.size() <= 10) {
+		if (card != null && cardsInHand.size() < 10) {
 			cardsInHand.add(card);
 		}
 	}
 
-	public void removeCardFromHand(Card card) {
-		cardsInHand.remove(card);
+	public boolean removeCardFromHand(Card card) {
+		return cardsInHand.remove(card);
 	}
 
 	public boolean payManaCost(int manaCost) {

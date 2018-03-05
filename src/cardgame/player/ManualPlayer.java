@@ -5,7 +5,6 @@ import java.util.List;
 import cardgame.cards.Card;
 import cardgame.cards.Minion;
 import cardgame.cards.Targetable;
-import cardgame.moveresolver.IMoveResolver;
 import logging.Messages;
 import logging.MyLogger;
 
@@ -15,14 +14,15 @@ import logging.MyLogger;
  */
 public class ManualPlayer extends Player {
 
-	public ManualPlayer(String name, int maxHealth, List<Card> startingDeck, IMoveResolver moveResolver) {
-		super(name, maxHealth, startingDeck, moveResolver);
+	public ManualPlayer(String name, int maxHealth, List<Card> startingDeck) {
+		super(name, maxHealth, startingDeck);
 	}
 
 	@Override
 	public void startTurn() {
 		// MyLogger.print(message);
-
+		MyLogger.printMenu();
+		MyLogger.getInputFromUser("Command: ");
 	}
 
 	private boolean handleUserInput(String input) {
@@ -43,6 +43,7 @@ public class ManualPlayer extends Player {
 			if (numberOfTarget == -1) {
 				target = this;
 			} else {
+				// TODO : get info about game (info accessor)
 				target = moveResolver.getPlayerBoard(this).get(numberOfTarget);
 			}
 

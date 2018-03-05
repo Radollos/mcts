@@ -10,9 +10,11 @@ public class Messages {
 	public static final String LINE_WITH_TEXT = "----------------------{0}----------------------\n";
 	public static final String LINE = "-----------------------------------------------\n"
 			+ "-----------------------------------------------";
-	public static final String MENU_INSTRUCTION = "Play card: 'play <number of card in hand>' \n"
+
+	public static final String PLAYER_INSTRUCTION = "Play card: 'play <number of card in hand>' \n"
 			+ "Attack: 'attack <number of attacking minion> <number of target (-1 for hero)>' \n"
 			+ "End turn: 'end' \n";
+
 	public static final String CHOOSE_TARGET = "Choose number oftarget (-1 for hero): ";
 	public static final String WRONG_COMMAND = "Wrong command. Please repeat.";
 	public static final String CURRENT_PLAYER = "Current player: {0}";
