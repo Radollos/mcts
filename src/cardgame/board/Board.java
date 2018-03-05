@@ -47,8 +47,8 @@ public class Board implements IBoard {
 	}
 
 	private List<? extends Card> copyCardList(List<? extends Card> list) {
-		List<Card> copy = new LinkedList<>(list);
-		// list.stream().forEach(e -> copy.add(e.makeCopy()));
+		List<Card> copy = new LinkedList<>();
+		list.stream().forEach(e -> copy.add(e.makeCopy()));
 		return copy;
 	}
 
@@ -75,19 +75,38 @@ public class Board implements IBoard {
 
 	@Override
 	public String toString() {
+		Iterator<Player> it = playersBoard.keySet().iterator();
+		return toStringTop(it.next()) + toStringBottom(it.next());
+	}
+
+	private String toStringTop(Player player) {
 		StringBuilder builder = new StringBuilder();
-		for (Player player : playersBoard.keySet()) {
-			builder.append(player);
-			builder.append(System.out.format(LINE_WITH_TEXT, "Hand:"));
-			Iterator<Minion> iterator = playersBoard.get(player).iterator();
-			for (int i = 0; iterator.hasNext(); i++) {
-				Minion minion = iterator.next();
-				builder.append("|" + i + ". ");
-				builder.append(minion);
-				builder.append("|");
-			}
-			builder.append(LINE);
+		builder.append(player.toStringTop());
+		builder.append(System.out.format(LINE_WITH_TEXT, "Hand:"));
+		Iterator<Minion> iterator = playersBoard.get(player).iterator();
+		for (int i = 0; iterator.hasNext(); i++) {
+			Minion minion = iterator.next();
+			builder.append("|" + i + ". ");
+			builder.append(minion);
+
 		}
+		builder.append("|");
+		builder.append(LINE);
+		return builder.toString();
+	}
+
+	private String toStringBottom(Player player) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(LINE);
+		Iterator<Minion> iterator = playersBoard.get(player).iterator();
+		for (int i = 0; iterator.hasNext(); i++) {
+			Minion minion = iterator.next();
+			builder.append("|" + i + ". ");
+			builder.append(minion);
+		}
+		builder.append("|");
+		builder.append(System.out.format(LINE_WITH_TEXT, "Hand:"));
+		builder.append(player.toStringBottom());
 		return builder.toString();
 	}
 }

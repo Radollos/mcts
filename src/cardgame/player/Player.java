@@ -1,6 +1,5 @@
 package cardgame.player;
 
-import static logging.Messages.LINE_WITH_TEXT;
 import static logging.Messages.PLAYER_STATISTICS;
 
 import java.util.ArrayList;
@@ -8,8 +7,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 import cardgame.cards.Card;
+import cardgame.cards.Minion;
 import cardgame.cards.Targetable;
-import cardgame.moveresolver.IMoveResolver;
+import cardgame.move.IMoveResolver;
 
 /**
  * @author Radek
@@ -17,23 +17,22 @@ import cardgame.moveresolver.IMoveResolver;
  */
 public abstract class Player implements Targetable {
 
-	private String name;
-	private int currentHealth;
-	private int maxHealth;
-	private int currentMana = 0;
-	private int maxMana = 0;
-	private int nextFatigueDamage = 1;
+	protected String name;
+	protected int currentHealth;
+	protected int maxHealth;
+	protected int currentMana = 0;
+	protected int maxMana = 0;
+	protected int nextFatigueDamage = 1;
 
-	private List<Card> cardsInHand = new ArrayList<>();
-	private List<Card> startingDeck = new LinkedList<>();
+	protected List<Card> cardsInHand = new ArrayList<>();
+	protected List<Card> startingDeck = new LinkedList<>();
 
-	private IMoveResolver moveResolver;
+	protected IMoveResolver moveResolver;
 
-	public Player(String name, int maxHealth, List<Card> startingDeck, IMoveResolver moveResolver) {
+	public Player(String name, int maxHealth, List<Card> startingDeck) {
 		this.name = name;
 		this.currentHealth = this.maxHealth = maxHealth;
 		this.startingDeck = startingDeck;
-		this.moveResolver = moveResolver;
 	}
 
 	public void nextTurn() {
@@ -42,22 +41,30 @@ public abstract class Player implements Targetable {
 		startTurn();
 	}
 
-	private void manageManaForNewTurn() {
-		currentMana = maxMana = maxMana < 10 ? maxMana++ : maxMana;
+	protected void manageManaForNewTurn() {
+		currentMana = maxMana = (maxMana < 10) ? maxMana++ : maxMana;
 	}
 
 	public void connectToGame(IMoveResolver moveResolver) {
 		this.moveResolver = moveResolver;
 	}
 
-	private void drawCard() {
-		moveResolver.drawCard(this);
-	}
-
 	public void addCardToHand(Card card) {
-		if (card != null && cardsInHand.size() <= 10) {
+		if (card != null && cardsInHand.size() < 10) {
 			cardsInHand.add(card);
 		}
+	}
+
+	public boolean removeCardFromHand(Card card) {
+		return cardsInHand.remove(card);
+	}
+
+	public boolean payManaCost(int manaCost) {
+		if (currentMana >= manaCost) {
+			currentMana -= manaCost;
+			return true;
+		}
+		return false;
 	}
 
 	public void dealFatiqueDamage() {
@@ -65,13 +72,25 @@ public abstract class Player implements Targetable {
 		nextFatigueDamage++;
 	}
 
+	public abstract void startTurn();
+
+	protected void drawCard() {
+		moveResolver.drawCard(this);
+	}
+
+	protected void playCard(Card card) {
+		moveResolver.playCard(card, this);
+	}
+
+	protected void attackWithMinion(Minion minion, Targetable target) {
+		moveResolver.attackWithMinion(minion, target);
+	}
+
 	@Override
 	public int attacked(int damage) {
 		currentHealth -= damage;
 		return 0;
 	}
-
-	public abstract void startTurn();
 
 	public int getCurrentHealth() {
 		return currentHealth;
@@ -85,16 +104,29 @@ public abstract class Player implements Targetable {
 		return startingDeck;
 	}
 
-	@Override
-	public String toString() {
+	public String toStringTop() {
 		StringBuilder builder = new StringBuilder();
-		builder.append(System.out.format(LINE_WITH_TEXT, name));
+		// builder.append(System.out.format(LINE_WITH_TEXT, name));
 		builder.append(System.out.format(PLAYER_STATISTICS, currentMana, currentHealth, maxHealth));
+		builder.append("|");
 		for (Card card : cardsInHand) {
-			builder.append("|");
 			builder.append(card);
 			builder.append("|");
 		}
+		builder.append("\n");
+		return builder.toString();
+	}
+
+	public String toStringBottom() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("|");
+		for (Card card : cardsInHand) {
+			builder.append(card);
+			builder.append("|");
+		}
+		builder.append("\n");
+		builder.append(System.out.format(PLAYER_STATISTICS, currentMana, currentHealth, maxHealth));
+		// builder.append(System.out.format(LINE_WITH_TEXT, name));
 		return builder.toString();
 	}
 }

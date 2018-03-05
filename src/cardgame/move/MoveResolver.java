@@ -1,5 +1,6 @@
-package cardgame.moveresolver;
+package cardgame.move;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -13,21 +14,52 @@ import cardgame.cards.Spell;
 import cardgame.cards.Targetable;
 import cardgame.player.Player;
 
+/**
+ * @author Radek
+ *
+ *         Responsible for resolving players' actions. First every action is
+ *         validated for correctness with MoveValidator, if move is correct it's
+ *         realized and board check is executed (remove dead minions, end game
+ *         if necessary). Moreover, it monitors current player and his turn
+ *         timer (60s). If player does not end turn before timer expires, his
+ *         turn is ended forcefully.
+ */
 public class MoveResolver implements IMoveResolver {
+
+	private final long timeForTurn = 60000;
+	private final IBoard board;
+	private final IBoardManager boardManager;
 
 	private Player playerOne;
 	private Player playerTwo;
 	private Player currentPlayer;
 
-	private final IBoard board;
-	private final IBoardManager boardManager;
-	private final Timer turnTimer = new Timer();
+	private Timer turnTimer = new Timer();
 
 	public MoveResolver(Player playerOne, Player playerTwo, IBoard board) {
 		this.playerOne = playerOne;
 		this.currentPlayer = this.playerTwo = playerTwo;
 		this.board = board;
 		this.boardManager = new BoardManager(board, playerOne, playerTwo);
+	}
+
+	public boolean realizeAction(Player issuingPlayer, Action action, List<Object> parameters) {
+		if (currentPlayer != issuingPlayer) {
+			return false;
+		}
+		switch (action) {
+		case PLAY_CARD:
+			if (parameters.size() > 0 && parameters.get(0) instanceof Card) {
+				return playCard((Card) parameters.get(0), issuingPlayer);
+			} else {
+				return false;
+			}
+		case ATTACK_WITH_MINION:
+
+			break;
+		}
+
+		return true;
 	}
 
 	@Override
@@ -42,24 +74,18 @@ public class MoveResolver implements IMoveResolver {
 	}
 
 	@Override
-	public void playCard(Card card, Player player) {
-		if (checkCardPlay(card, player)) {
+	public boolean playCard(Card card, Player player) {
+		if (player.payManaCost(card.getCost()) && player.removeCardFromHand(card)) {
 			if (card instanceof Minion) {
 				board.playCardOnBoard(player, (Minion) card);
 			} else if (card instanceof Spell) {
 				// TODO: add spell
 			}
-		}
-		boardManager.runBoardCheck();
-	}
-
-	private boolean checkCardPlay(Card card, Player player) {
-		if (board.getPlayerBoard(player).size() >= 7) {
-			return false;
-		} else if (player.getCurrentMana() < card.getCost()) {
+			boardManager.runBoardCheck();
+			return true;
+		} else {
 			return false;
 		}
-		return true;
 	}
 
 	@Override
@@ -71,20 +97,26 @@ public class MoveResolver implements IMoveResolver {
 
 	@Override
 	public void endTurn() {
-		// TODO: inform current player that his turn has ended?
+		// TODO: inform current player that his turn has ended/started?
 		currentPlayer = (currentPlayer == playerOne) ? playerTwo : playerOne;
 		turnTimer.cancel();
+		turnTimer = new Timer();
 		turnTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
 				endTurn();
 			}
-		}, 60);
+		}, timeForTurn);
 		currentPlayer.startTurn();
 	}
 
 	@Override
 	public Player getCurrentPlayer() {
 		return currentPlayer;
+	}
+
+	@Override
+	public List<Minion> getPlayerBoard(Player player) {
+		return board.getPlayerBoard(player);
 	}
 }
