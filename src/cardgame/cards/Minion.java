@@ -12,9 +12,9 @@ import cardgame.cards.effects.Effect;
  */
 public class Minion extends Card implements Targetable {
 
-	private int maxHealth;
-	private int currentHealth;
-	private int attack;
+	protected int maxHealth;
+	protected int currentHealth;
+	protected int attack;
 
 	public Minion(String name, int attack, int maxHealth, int cost, List<Effect> effects) {
 		super(name, cost, effects);

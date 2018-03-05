@@ -1,4 +1,4 @@
-package cardgame.moveresolver;
+package cardgame.move;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,9 +12,9 @@ public interface IMoveResolver {
 
 	public void drawCard(Player player);
 
-	public void playCard(Card card, Player player);
+	public boolean playCard(Card card, Player player);
 
-	public void playCard(Card card, Player player, Optional<List<Targetable>> targets);
+	public boolean playCard(Card card, Player player, Optional<List<Targetable>> targets);
 
 	public void attackWithMinion(Minion minion, Targetable target);
 
@@ -26,4 +26,5 @@ public interface IMoveResolver {
 
 	public Player getEnemyPlayer();
 
+	public List<Minion> getPlayerBoard(Player player);
 }
