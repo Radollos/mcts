@@ -2,7 +2,7 @@ package cardgame.cards;
 
 import static logging.Messages.MINION_STATISTICS;
 
-import java.util.List;
+import java.util.Set;
 
 import cardgame.cards.effects.Effect;
 
@@ -16,7 +16,7 @@ public class Minion extends Card implements Targetable {
 	protected int currentHealth;
 	protected int attack;
 
-	public Minion(String name, int attack, int maxHealth, int cost, List<Effect> effects) {
+	public Minion(String name, int attack, int maxHealth, int cost, Set<Effect> effects) {
 		super(name, cost, effects);
 		setMaxHealth(maxHealth);
 		setCurrentHealth(maxHealth);

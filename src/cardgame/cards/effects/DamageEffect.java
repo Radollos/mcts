@@ -11,7 +11,7 @@ public class DamageEffect extends Effect {
 
 	public DamageEffect(int damage) {
 		super();
-		isTargetPresent = true;
+		isTargetRequired = true;
 		setDamage(damage);
 	}
 

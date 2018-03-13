@@ -11,7 +11,7 @@ public class HealEffect extends Effect {
 
 	public HealEffect(int healValue) {
 		super();
-		isTargetPresent = true;
+		isTargetRequired = true;
 		setHealValue(healValue);
 	}
 

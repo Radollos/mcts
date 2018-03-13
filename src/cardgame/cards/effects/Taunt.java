@@ -9,7 +9,7 @@ public class Taunt extends Effect {
 
 	public Taunt() {
 		super();
-		isTargetPresent = false;
+		isTargetRequired = false;
 	}
 
 	@Override
@@ -17,4 +17,8 @@ public class Taunt extends Effect {
 		return;
 	}
 
+	@Override
+	public String toString() {
+		return "taunt";
+	}
 }

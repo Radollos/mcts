@@ -10,7 +10,7 @@ public class MinionDestroyEffect extends Effect {
 
 	public MinionDestroyEffect() {
 		super();
-		isTargetPresent = true;
+		isTargetRequired = true;
 	}
 
 	@Override

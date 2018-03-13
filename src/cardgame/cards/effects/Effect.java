@@ -7,12 +7,12 @@ import cardgame.cards.Targetable;
 
 public abstract class Effect {
 
-	protected boolean isTargetPresent;
+	protected boolean isTargetRequired;
 
 	public abstract void realizeEffect(Optional<List<Targetable>> targets);
 
-	public boolean getIsTargetPresent() {
-		return isTargetPresent;
+	public boolean isTargetRequired() {
+		return isTargetRequired;
 	}
 
 }

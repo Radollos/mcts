@@ -109,6 +109,10 @@ public abstract class Player implements Targetable {
 		return startingDeck;
 	}
 
+	public List<Card> getCardsInHand() {
+		return cardsInHand;
+	}
+
 	public String toStringTop() {
 		StringBuilder builder = new StringBuilder();
 		// builder.append(System.out.format(LINE_WITH_TEXT, name));

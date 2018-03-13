@@ -47,6 +47,7 @@ public class MoveResolver implements IMoveResolver {
 		this.boardManager = new BoardManager(board, playerOne, playerTwo);
 	}
 
+	@Override
 	public boolean realizeAction(Player issuingPlayer, Action action, List<Object> parameters) {
 		if (currentPlayer != issuingPlayer) {
 			return false;
@@ -145,6 +146,21 @@ public class MoveResolver implements IMoveResolver {
 		}
 	}
 
+	public List<Targetable> getPossibleTargetsToAttact() {
+		List<Targetable> targetsToAttact = new ArrayList<Targetable>();
+
+		List<Minion> oponentTaunts = getEnemiesTauntOnTheBoard();
+		if (oponentTaunts != null && !oponentTaunts.isEmpty()) {
+			targetsToAttact.addAll(oponentTaunts);
+		} else {
+			Player enemy = getEnemyPlayer();
+			targetsToAttact.addAll(getPlayerBoard(enemy));
+			targetsToAttact.add(enemy);
+		}
+
+		return targetsToAttact;
+	}
+
 	private boolean checkCardPlay(Card card, Player player) {
 		if (board.getPlayerBoard(player).size() >= 7) {
 			return false;
@@ -156,8 +172,8 @@ public class MoveResolver implements IMoveResolver {
 
 	private boolean isTargetsValid(Card card, Optional<List<Targetable>> targets) {
 		for (Effect effect : card.getEffects()) {
-			boolean targetRequired = effect.getIsTargetPresent();
-			boolean isListEmpty = isListEmpty(targets);
+			boolean targetRequired = effect.isTargetRequired();
+			boolean isListEmpty = targets.isPresent() && !targets.get().isEmpty();
 
 			if ((targetRequired && !isListEmpty) || (!targetRequired && isListEmpty)) {
 				return false;
@@ -165,10 +181,6 @@ public class MoveResolver implements IMoveResolver {
 		}
 
 		return true;
-	}
-
-	private boolean isListEmpty(Optional<List<Targetable>> list) {
-		return list.isPresent() && !list.get().isEmpty();
 	}
 
 	private List<Minion> getEnemiesTauntOnTheBoard() {
@@ -205,7 +217,36 @@ public class MoveResolver implements IMoveResolver {
 		return true;
 	}
 
+	public List<Targetable> getPossibleTargets(Card card) {
+		List<Targetable> possibleTargets = new ArrayList<Targetable>();
+
+		return possibleTargets;
+	}
+
+	// przeniesione do Game
 	public List<Minion> getPlayerBoard(Player player) {
 		return board.getPlayerBoard(player);
+	}
+
+	@Override
+	public List<Targetable> getAllMinions() {
+		List<Targetable> allMinion = new ArrayList<Targetable>();
+		allMinion.addAll(getPlayerBoard(playerOne));
+		allMinion.addAll(getPlayerBoard(playerTwo));
+		return allMinion;
+	}
+
+	public List<Targetable> getAllFigure() {
+		List<Targetable> allFigure = new ArrayList<Targetable>();
+		allFigure.addAll(getAllPlayerFigure(playerOne));
+		allFigure.addAll(getAllPlayerFigure(playerTwo));
+		return allFigure;
+	}
+
+	private List<Targetable> getAllPlayerFigure(Player player) {
+		List<Targetable> allFigure = new ArrayList<Targetable>();
+		allFigure.add(player);
+		allFigure.addAll(getPlayerBoard(player));
+		return allFigure;
 	}
 }

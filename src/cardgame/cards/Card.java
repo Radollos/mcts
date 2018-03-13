@@ -1,6 +1,6 @@
 package cardgame.cards;
 
-import java.util.List;
+import java.util.Set;
 
 import cardgame.cards.effects.Effect;
 
@@ -12,9 +12,9 @@ public abstract class Card {
 
 	protected String name;
 	protected int cost;
-	protected List<Effect> effects;
+	protected Set<Effect> effects;
 
-	public Card(String name, int cost, List<Effect> effects) {
+	public Card(String name, int cost, Set<Effect> effects) {
 		setName(name);
 		setCost(cost);
 		setEffects(effects);
@@ -40,16 +40,21 @@ public abstract class Card {
 		this.cost = cost >= 0 ? cost : 0;
 	}
 
-	public List<Effect> getEffects() {
+	public Set<Effect> getEffects() {
 		return effects;
 	}
 
-	public void setEffects(List<Effect> effects) {
+	public void setEffects(Set<Effect> effects) {
 		this.effects = effects;
 	}
 
 	public boolean hasEffect(String effectName) {
-		return effects.stream().anyMatch(e -> e.toString().equals("effectName"));
+		for (Effect effect : effects) {
+			if (effect.toString().equals(effectName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public abstract Card makeCopy();

@@ -1,6 +1,6 @@
 package cardgame.cards;
 
-import java.util.List;
+import java.util.Set;
 
 import cardgame.cards.effects.Effect;
 
@@ -10,7 +10,7 @@ import cardgame.cards.effects.Effect;
  */
 public class Spell extends Card {
 
-	public Spell(String name, int cost, List<Effect> effects) {
+	public Spell(String name, int cost, Set<Effect> effects) {
 		super(name, cost, effects);
 	}
 
@@ -31,7 +31,6 @@ public class Spell extends Card {
 
 	@Override
 	public Card makeCopy() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Spell(this);
 	}
 }

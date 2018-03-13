@@ -27,4 +27,14 @@ public interface IMoveResolver {
 	public Player getEnemyPlayer();
 
 	public List<Minion> getPlayerBoard(Player player);
+
+	public List<Targetable> getPossibleTargets(Card card);
+
+	public boolean realizeAction(Player issuingPlayer, Action action, List<Object> parameters);
+
+	public List<Targetable> getPossibleTargetsToAttact();
+
+	public List<Targetable> getAllFigure();
+
+	public List<Targetable> getAllMinions();
 }
