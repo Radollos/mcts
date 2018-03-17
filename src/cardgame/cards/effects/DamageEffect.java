@@ -9,8 +9,8 @@ public class DamageEffect extends Effect {
 
 	private int damage;
 
-	public DamageEffect(int damage) {
-		super();
+	public DamageEffect(int damage, EffectArea area) {
+		super("damage", area);
 		isTargetRequired = true;
 		setDamage(damage);
 	}
@@ -30,10 +30,5 @@ public class DamageEffect extends Effect {
 				target.attacked(damage);
 			}
 		}
-	}
-
-	@Override
-	public String toString() {
-		return "damage";
 	}
 }

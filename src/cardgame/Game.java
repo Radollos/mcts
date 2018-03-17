@@ -68,6 +68,6 @@ public class Game {
 	}
 
 	public void startGame() {
-		moveResolver.endTurn();
+		moveResolver.startGame();
 	}
 }

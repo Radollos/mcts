@@ -1,5 +1,6 @@
 package cardgame.player;
 
+import static logging.Messages.LINE_WITH_TEXT;
 import static logging.Messages.PLAYER_STATISTICS;
 
 import java.util.ArrayList;
@@ -42,7 +43,12 @@ public abstract class Player implements Targetable {
 	}
 
 	protected void manageManaForNewTurn() {
-		currentMana = maxMana = (maxMana < 10) ? maxMana++ : maxMana;
+		if (maxMana < 10) {
+			maxMana++;
+			currentMana = maxMana;
+		} else {
+			currentMana = maxMana;
+		}
 	}
 
 	public void connectToGame(IMoveResolver moveResolver) {
@@ -116,11 +122,12 @@ public abstract class Player implements Targetable {
 	public String toStringTop() {
 		StringBuilder builder = new StringBuilder();
 		// builder.append(System.out.format(LINE_WITH_TEXT, name));
-		builder.append(System.out.format(PLAYER_STATISTICS, currentMana, currentHealth, maxHealth));
-		builder.append("|");
+		builder.append(name + "\n");
+		builder.append(String.format(PLAYER_STATISTICS, currentMana, currentHealth, maxHealth));
+		builder.append(String.format(LINE_WITH_TEXT, "Hand:"));
 		for (Card card : cardsInHand) {
 			builder.append(card);
-			builder.append("|");
+			builder.append(" | ");
 		}
 		builder.append("\n");
 		return builder.toString();
@@ -128,14 +135,26 @@ public abstract class Player implements Targetable {
 
 	public String toStringBottom() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("|");
+		
 		for (Card card : cardsInHand) {
 			builder.append(card);
-			builder.append("|");
+			builder.append(" | ");
 		}
 		builder.append("\n");
-		builder.append(System.out.format(PLAYER_STATISTICS, currentMana, currentHealth, maxHealth));
+		builder.append(String.format(LINE_WITH_TEXT, "Hand:"));
+	
+		builder.append(String.format(PLAYER_STATISTICS, currentMana, currentHealth, maxHealth));
+		builder.append(name + "\n");
 		// builder.append(System.out.format(LINE_WITH_TEXT, name));
 		return builder.toString();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String toString() {
+		return getName();
 	}
 }

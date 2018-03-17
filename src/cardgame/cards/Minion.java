@@ -18,6 +18,7 @@ public class Minion extends Card implements Targetable {
 
 	public Minion(String name, int attack, int maxHealth, int cost, Set<Effect> effects) {
 		super(name, cost, effects);
+		this.attack = attack;
 		setMaxHealth(maxHealth);
 		setCurrentHealth(maxHealth);
 	}
@@ -67,7 +68,7 @@ public class Minion extends Card implements Targetable {
 
 	@Override
 	public String toString() {
-		return System.out.format(MINION_STATISTICS, name, cost, currentHealth, maxHealth, attack).toString();
+		return String.format(MINION_STATISTICS, name, cost, currentHealth, maxHealth, attack).toString();
 	}
 
 	@Override

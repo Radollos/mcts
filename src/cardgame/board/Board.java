@@ -21,13 +21,19 @@ public class Board implements IBoard {
 
 	private Map<Player, List<Minion>> playersBoard = new HashMap<>();
 	private Map<Player, List<Card>> playersDeck = new HashMap<>();
+	private Player currentPlayer;
+	private Player enemyPlayer;
 
 	public Board(Player playerOne, Player playerTwo) {
 		if (playerOne == playerTwo || playerOne == null || playerTwo == null) {
 			throw new IllegalArgumentException();
 		}
+		currentPlayer = playerOne;
+		enemyPlayer = playerTwo;
 		prepareBoard(playerOne, playerTwo);
 		prepareDecks(playerOne, playerTwo);
+		addCardsToHand(playerOne, 3);
+		addCardsToHand(playerTwo, 4);
 	}
 
 	private void prepareBoard(Player playerOne, Player playerTwo) {
@@ -44,6 +50,18 @@ public class Board implements IBoard {
 		List<Card> deckTwo = (List<Card>) copyCardList(playerTwo.getStartingDeck());
 		Collections.shuffle(deckTwo);
 		playersDeck.put(playerTwo, deckTwo);
+	}
+	
+	private void addCardsToHand(Player player, int numberOfCards) {
+		List<Card> startingDeck = player.getStartingDeck();
+		Collections.shuffle(startingDeck);
+		
+		for (int i = 0; i < numberOfCards; i++) {
+			Optional<Card> card = drawCard(player);
+			if (card.isPresent()) {
+				player.addCardToHand(card.get());
+			}
+		}
 	}
 
 	private List<? extends Card> copyCardList(List<? extends Card> list) {
@@ -76,38 +94,48 @@ public class Board implements IBoard {
 
 	@Override
 	public String toString() {
-		Iterator<Player> it = playersBoard.keySet().iterator();
-		return toStringTop(it.next()) + toStringBottom(it.next());
+//		Iterator<Player> it = playersBoard.keySet().iterator();
+		return toStringTop(enemyPlayer) + toStringBottom(currentPlayer);
 	}
 
 	private String toStringTop(Player player) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(player.toStringTop());
-		builder.append(System.out.format(LINE_WITH_TEXT, "Hand:"));
 		Iterator<Minion> iterator = playersBoard.get(player).iterator();
+		builder.append("\n");
+		builder.append(String.format(LINE_WITH_TEXT, "Board:"));
 		for (int i = 0; iterator.hasNext(); i++) {
 			Minion minion = iterator.next();
-			builder.append("|" + i + ". ");
+			builder.append(" | " + i + ". ");
 			builder.append(minion);
-
 		}
-		builder.append("|");
+		
 		builder.append(LINE);
 		return builder.toString();
 	}
 
 	private String toStringBottom(Player player) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(LINE);
+		builder.append("\n");
 		Iterator<Minion> iterator = playersBoard.get(player).iterator();
+		
 		for (int i = 0; iterator.hasNext(); i++) {
 			Minion minion = iterator.next();
-			builder.append("|" + i + ". ");
+			builder.append(" | " + i + ". ");
 			builder.append(minion);
 		}
-		builder.append("|");
-		builder.append(System.out.format(LINE_WITH_TEXT, "Hand:"));
+		builder.append("\n");
+		builder.append(String.format(LINE_WITH_TEXT, "Board:"));
+		builder.append("\n");
 		builder.append(player.toStringBottom());
 		return builder.toString();
+	}
+	
+	public void setCurrentPlayer(Player player) {
+		currentPlayer = player;
+	}
+	
+	public void setEnemyPlayer(Player player) {
+		enemyPlayer = player;
 	}
 }

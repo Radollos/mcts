@@ -1,10 +1,13 @@
 package cardgame.player;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import cardgame.board.IBoard;
 import cardgame.cards.Card;
 import cardgame.cards.Minion;
 import cardgame.cards.Targetable;
+import cardgame.move.Action;
 import logging.Messages;
 import logging.MyLogger;
 
@@ -20,20 +23,34 @@ public class ManualPlayer extends Player {
 
 	@Override
 	public void startTurn() {
+		IBoard board = moveResolver.getBoard();
+		MyLogger.printBoard(board, this);
+
 		// MyLogger.print(message);
 		MyLogger.printMenu();
-		MyLogger.getInputFromUser("Command: ");
+		String command = "";
+
+		do {
+			command = MyLogger.getInputFromUser("Command: ");
+			handleUserInput(command);
+		} while (!command.equals("end"));
 	}
 
 	private boolean handleUserInput(String input) {
 		String[] trimmed = input.split(" ");
+
 		switch (trimmed[0]) {
 		case "play":
 			// format: play <number of card from hand>
 			int numberOfCard = Integer.valueOf(trimmed[1]);
 			Card card = cardsInHand.get(numberOfCard);
-			moveResolver.playCard(card, this);
+			List<Object> params = new ArrayList<Object>();
+			params.add(card);
+			
+			moveResolver.realizeAction(this, Action.PLAY_CARD, params);			
+	//		moveResolver.playCard(card, this);
 			break;
+
 		case "attack":
 			// format: attack <number of attacking minion> <number of target (-1 for hero)>
 			int numberOfMinion = Integer.valueOf(trimmed[1]);

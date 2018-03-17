@@ -3,6 +3,7 @@ package cardgame.move;
 import java.util.List;
 import java.util.Optional;
 
+import cardgame.board.IBoard;
 import cardgame.cards.Card;
 import cardgame.cards.Minion;
 import cardgame.cards.Targetable;
@@ -37,4 +38,8 @@ public interface IMoveResolver {
 	public List<Targetable> getAllFigure();
 
 	public List<Targetable> getAllMinions();
+
+	public void startGame();
+
+	public IBoard getBoard();
 }

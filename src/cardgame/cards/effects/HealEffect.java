@@ -9,8 +9,8 @@ public class HealEffect extends Effect {
 
 	private int healValue;
 
-	public HealEffect(int healValue) {
-		super();
+	public HealEffect(int healValue, EffectArea area) {
+		super("heal", area);
 		isTargetRequired = true;
 		setHealValue(healValue);
 	}
@@ -31,10 +31,4 @@ public class HealEffect extends Effect {
 			}
 		}
 	}
-
-	@Override
-	public String toString() {
-		return "heal";
-	}
-
 }

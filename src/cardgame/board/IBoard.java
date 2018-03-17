@@ -16,4 +16,8 @@ public interface IBoard {
 	public Optional<Card> drawCard(Player player);
 
 	public List<Minion> getPlayerBoard(Player player);
+	
+	public void setCurrentPlayer(Player player);
+	
+	public void setEnemyPlayer(Player player);
 }

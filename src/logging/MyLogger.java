@@ -12,6 +12,7 @@ import java.util.Scanner;
 import java.util.logging.Logger;
 
 import cardgame.board.IBoard;
+import cardgame.cards.Card;
 import cardgame.player.Player;
 
 /**
@@ -26,7 +27,7 @@ public class MyLogger extends Logger {
 	static {
 		scanner = new Scanner(System.in);
 		try {
-			fileWriter = new PrintWriter(LocalDateTime.now().toString() + ".txt", "UTF-8");
+			fileWriter = new PrintWriter(System.currentTimeMillis() + ".txt", "UTF-8");
 		} catch (FileNotFoundException | UnsupportedEncodingException e) {
 			printError(LOG_FILE_CREATE_EXCEPTION, e);
 			e.printStackTrace();
@@ -50,13 +51,13 @@ public class MyLogger extends Logger {
 	}
 
 	public static void printError(String message, Throwable throwable) {
-		printInternal(System.out.format(ERROR_MARKER, message).toString());
+		printInternal(String.format(ERROR_MARKER, message));
 	}
 
 	public static String getInputFromUser(String inputDescription) {
 		printAndSaveToLogFile(inputDescription);
 		String userInput = scanner.nextLine();
-		printAndSaveToLogFile(userInput);
+		saveToLogFile(userInput);
 		return userInput;
 	}
 
@@ -64,8 +65,16 @@ public class MyLogger extends Logger {
 		printInternal(message);
 		fileWriter.println(message);
 	}
+	
+	private static void saveToLogFile(String message) {
+		fileWriter.println(message);
+	}
 
 	private static void printInternal(String message) {
 		System.out.println(message);
+	}
+
+	public static void printPlayedCard(Player player, Card card) {
+		printAndSaveToLogFile(player.getName() + " played card " + card);
 	}
 }

@@ -49,9 +49,11 @@ public abstract class Card {
 	}
 
 	public boolean hasEffect(String effectName) {
-		for (Effect effect : effects) {
-			if (effect.toString().equals(effectName)) {
-				return true;
+		if (effects != null) {
+			for (Effect effect : effects) {
+				if (effect.toString().equals(effectName)) {
+					return true;
+				}
 			}
 		}
 		return false;

@@ -1,5 +1,6 @@
 package cardgame.move;
 
+import static logging.Messages.NOT_ENOUGH_MANA;
 import static logging.Messages.TAUNT_ON_THE_BOARD;
 import static logging.MyLogger.print;
 
@@ -17,6 +18,8 @@ import cardgame.cards.Minion;
 import cardgame.cards.Targetable;
 import cardgame.cards.effects.Effect;
 import cardgame.player.Player;
+import logging.Messages;
+import logging.MyLogger;
 
 /**
  * @author Radek
@@ -30,7 +33,7 @@ import cardgame.player.Player;
  */
 public class MoveResolver implements IMoveResolver {
 
-	private final long timeForTurn = 60000;
+	private final long timeForTurn = 120000;
 	private final IBoard board;
 	private final IBoardManager boardManager;
 
@@ -41,8 +44,8 @@ public class MoveResolver implements IMoveResolver {
 	private Timer turnTimer = new Timer();
 
 	public MoveResolver(Player playerOne, Player playerTwo, IBoard board) {
-		this.playerOne = playerOne;
-		this.currentPlayer = this.playerTwo = playerTwo;
+		this.currentPlayer = this.playerOne = playerOne;
+		this.playerTwo = playerTwo;
 		this.board = board;
 		this.boardManager = new BoardManager(board, playerOne, playerTwo);
 	}
@@ -60,7 +63,7 @@ public class MoveResolver implements IMoveResolver {
 				return false;
 			}
 		case ATTACK_WITH_MINION:
-
+			
 			break;
 		}
 
@@ -85,8 +88,10 @@ public class MoveResolver implements IMoveResolver {
 				board.playMinionOnBoard(player, (Minion) card);
 				boardManager.runBoardCheck();
 			}
+			MyLogger.printPlayedCard(player, card);
 			return true;
 		} else {
+			MyLogger.print(String.format(NOT_ENOUGH_MANA, card));
 			return false;
 		}
 
@@ -114,6 +119,11 @@ public class MoveResolver implements IMoveResolver {
 	}
 
 	@Override
+	public void startGame() {
+		currentPlayer.nextTurn();
+	}
+
+	@Override
 	public void endTurn() {
 		// TODO: inform current player that his turn has ended/started?
 		currentPlayer = (currentPlayer == playerOne) ? playerTwo : playerOne;
@@ -122,10 +132,14 @@ public class MoveResolver implements IMoveResolver {
 		turnTimer.schedule(new TimerTask() {
 			@Override
 			public void run() {
+				MyLogger.print(Messages.END_TURN);
 				endTurn();
 			}
 		}, timeForTurn);
-		currentPlayer.startTurn();
+		board.setCurrentPlayer(currentPlayer);
+		board.setEnemyPlayer(getEnemyPlayer());
+
+		currentPlayer.nextTurn();
 	}
 
 	@Override
@@ -146,6 +160,7 @@ public class MoveResolver implements IMoveResolver {
 		}
 	}
 
+	@Override
 	public List<Targetable> getPossibleTargetsToAttact() {
 		List<Targetable> targetsToAttact = new ArrayList<Targetable>();
 
@@ -206,7 +221,7 @@ public class MoveResolver implements IMoveResolver {
 		if (ifEnemyHasTauntOnTheBoard()) {
 			List<Minion> enemiesTaunts = getEnemiesTauntOnTheBoard();
 
-			if (target instanceof Minion && enemiesTaunts.contains((Minion) target)) {
+			if (target instanceof Minion && enemiesTaunts.contains(target)) {
 				return true;
 			} else {
 				print(TAUNT_ON_THE_BOARD);
@@ -217,6 +232,7 @@ public class MoveResolver implements IMoveResolver {
 		return true;
 	}
 
+	@Override
 	public List<Targetable> getPossibleTargets(Card card) {
 		List<Targetable> possibleTargets = new ArrayList<Targetable>();
 
@@ -224,6 +240,7 @@ public class MoveResolver implements IMoveResolver {
 	}
 
 	// przeniesione do Game
+	@Override
 	public List<Minion> getPlayerBoard(Player player) {
 		return board.getPlayerBoard(player);
 	}
@@ -236,6 +253,7 @@ public class MoveResolver implements IMoveResolver {
 		return allMinion;
 	}
 
+	@Override
 	public List<Targetable> getAllFigure() {
 		List<Targetable> allFigure = new ArrayList<Targetable>();
 		allFigure.addAll(getAllPlayerFigure(playerOne));
@@ -248,5 +266,10 @@ public class MoveResolver implements IMoveResolver {
 		allFigure.add(player);
 		allFigure.addAll(getPlayerBoard(player));
 		return allFigure;
+	}
+
+	@Override
+	public IBoard getBoard() {
+		return board;
 	}
 }

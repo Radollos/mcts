@@ -1,8 +1,11 @@
 package cardgame.cards;
 
+import static logging.Messages.SPELL_STATISTICS;
+
 import java.util.Set;
 
 import cardgame.cards.effects.Effect;
+import logging.Messages;
 
 /**
  * @author Radek
@@ -20,13 +23,7 @@ public class Spell extends Card {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append(name + ", " + cost + " mana" + ", [");
-
-		for (Effect effect : effects) {
-			builder.append(effect + "|");
-		}
-		return builder.toString();
+		return String.format(Messages.SPELL_STATISTICS, name, cost, effects.toString()).toString();
 	}
 
 	@Override

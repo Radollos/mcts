@@ -9,7 +9,7 @@ import cardgame.cards.Targetable;
 public class MinionDestroyEffect extends Effect {
 
 	public MinionDestroyEffect() {
-		super();
+		super("minion destroy", EffectArea.ONE_MINION);
 		isTargetRequired = true;
 	}
 
@@ -22,10 +22,5 @@ public class MinionDestroyEffect extends Effect {
 				((Minion) minion).setHealth(0);
 			}
 		}
-	}
-
-	@Override
-	public String toString() {
-		return "minion destroy";
 	}
 }

@@ -8,17 +8,12 @@ import cardgame.cards.Targetable;
 public class Taunt extends Effect {
 
 	public Taunt() {
-		super();
+		super("taunt", null);
 		isTargetRequired = false;
 	}
 
 	@Override
 	public void realizeEffect(Optional<List<Targetable>> targets) {
 		return;
-	}
-
-	@Override
-	public String toString() {
-		return "taunt";
 	}
 }
